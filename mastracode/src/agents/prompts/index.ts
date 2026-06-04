@@ -6,6 +6,7 @@ export { buildBasePrompt } from './base.js';
 export { buildModePrompt, buildModePromptFn } from './build.js';
 export { planModePrompt } from './plan.js';
 export { fastModePrompt } from './fast.js';
+export { novaModePrompt } from './nova.js';
 
 import { hasTavilyKey } from '../../tools/index.js';
 import { loadAgentInstructions, formatAgentInstructions } from './agent-instructions.js';
@@ -14,6 +15,7 @@ import type { PromptContext as BasePromptContext } from './base.js';
 import { buildModePromptFn } from './build.js';
 import { fastModePrompt } from './fast.js';
 import { modelSpecificPrompts } from './model.js';
+import { novaModePrompt } from './nova.js';
 import { planModePrompt } from './plan.js';
 import { buildToolGuidance } from './tool-guidance.js';
 
@@ -34,6 +36,7 @@ export interface PromptContext extends Omit<BasePromptContext, 'toolGuidance'> {
 
 const modePrompts: Record<string, string | ((ctx: PromptContext) => string)> = {
   build: buildModePromptFn,
+  nova: novaModePrompt,
   plan: planModePrompt,
   fast: fastModePrompt,
 };

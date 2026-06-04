@@ -69,3 +69,28 @@ describe('buildFullPrompt task state', () => {
     expect(prompt.match(/<\/current-task-list>/g)).toHaveLength(1);
   });
 });
+
+describe('buildFullPrompt Nova mode', () => {
+  it('uses the Nova base identity and registered Nova mode prompt', () => {
+    const prompt = buildFullPrompt({
+      projectPath: '/tmp/project',
+      projectName: 'test-project',
+      gitBranch: 'main',
+      platform: 'darwin',
+      date: '2026-03-23',
+      mode: 'nova',
+      activePlan: null,
+      modeId: 'nova',
+      currentDate: '2026-03-23',
+      workingDir: '/tmp/project',
+      state: {
+        permissionRules: { tools: {} },
+      },
+    });
+
+    expect(prompt).toContain('You are Nova, an interactive coding agent');
+    expect(prompt).toContain('NOVA_MODE_PROMPT_V1');
+    expect(prompt).toContain('# Nova Mode');
+    expect(prompt).not.toContain('You are Mastra Code, an interactive CLI');
+  });
+});
