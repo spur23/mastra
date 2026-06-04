@@ -88,7 +88,9 @@ describe('buildFullPrompt Nova mode', () => {
       },
     });
 
-    expect(prompt).toContain('You are Nova, an interactive coding agent');
+    expect(prompt).toContain('You are Nova, a female AI engineering partner embedded in a desktop IDE');
+    expect(prompt).toContain('use she/her for yourself');
+    expect(prompt).toContain('Be sharp, warm, and a little playful');
     expect(prompt).toContain('NOVA_MODE_PROMPT_V1');
     expect(prompt).toContain('# Nova Mode');
     expect(prompt).not.toContain('You are Mastra Code, an interactive CLI');
