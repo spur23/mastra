@@ -43,6 +43,7 @@ const harnessGetCurrentThreadIdMock = vi.fn();
 const harnessListThreadsMock = vi.fn();
 const harnessSetStateMock = vi.fn();
 const harnessSetThreadSettingMock = vi.fn();
+const resolveModelDefaultsMock = vi.fn(() => ({ build: '', plan: '', fast: '' }));
 let harnessStateMock: Record<string, unknown> = { cavemanObservations: false };
 
 function createMockSettings() {
@@ -170,16 +171,20 @@ vi.mock('./agents/model.js', () => ({
   resolveModel: vi.fn(),
 }));
 
+vi.mock('./agents/subagents/audit-tests.js', () => ({
+  auditTestsSubagent: { id: 'audit-tests' },
+}));
+
 vi.mock('./agents/subagents/execute.js', () => ({
-  executeSubagent: {},
+  executeSubagent: { id: 'execute' },
 }));
 
 vi.mock('./agents/subagents/explore.js', () => ({
-  exploreSubagent: {},
+  exploreSubagent: { id: 'explore' },
 }));
 
 vi.mock('./agents/subagents/plan.js', () => ({
-  planSubagent: {},
+  planSubagent: { id: 'plan' },
 }));
 
 vi.mock('./agents/tools.js', () => ({
@@ -216,7 +221,7 @@ vi.mock('../onboarding/settings.js', () => ({
   getCustomProviderId: vi.fn(),
   loadSettings: loadSettingsMock,
   MEMORY_GATEWAY_PROVIDER: 'mastra',
-  resolveModelDefaults: vi.fn(() => ({ build: '', plan: '', fast: '' })),
+  resolveModelDefaults: resolveModelDefaultsMock,
   resolveOmModel: vi.fn(() => ''),
   resolveOmRoleModel: vi.fn(() => ''),
   saveSettings: vi.fn(),
@@ -296,6 +301,8 @@ describe('createMastraCode', () => {
     harnessSetThreadSettingMock.mockReset();
     harnessSetThreadSettingMock.mockResolvedValue(undefined);
     harnessV1ConstructorMock.mockReset();
+    resolveModelDefaultsMock.mockReset();
+    resolveModelDefaultsMock.mockReturnValue({ build: '', plan: '', fast: '' });
     detectProjectMock.mockReset();
     detectProjectMock.mockReturnValue({
       mode: 'none',
@@ -378,6 +385,30 @@ describe('createMastraCode', () => {
         expect.objectContaining({ id: 'review', defaultModelId: '__GATEWAY_OPENAI_MODEL__' }),
         expect.objectContaining({ id: 'ship', defaultModelId: '__GATEWAY_ANTHROPIC_MODEL_OPUS__' }),
       ]),
+    );
+  });
+
+  it('registers audit-tests with the built-in workflow subagents', async () => {
+    resolveModelDefaultsMock.mockReturnValue({
+      build: 'anthropic/build-model',
+      plan: 'openai/plan-model',
+      fast: 'cerebras/fast-model',
+    });
+    const { createMastraCode } = await import('../index.js');
+
+    await createMastraCode();
+
+    const harnessConfig = harnessConstructorMock.mock.calls[0]?.[0] as
+      | { subagents?: Array<{ id?: string; defaultModelId?: string }> }
+      | undefined;
+    expect(harnessConfig?.subagents?.map(subagent => subagent.id)).toEqual([
+      'explore',
+      'plan',
+      'execute',
+      'audit-tests',
+    ]);
+    expect(harnessConfig?.subagents?.find(subagent => subagent.id === 'audit-tests')?.defaultModelId).toBe(
+      'openai/plan-model',
     );
   });
 

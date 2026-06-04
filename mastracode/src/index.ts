@@ -40,9 +40,7 @@ import { getDynamicInstructions } from './agents/instructions.js';
 import { getDynamicMemory } from './agents/memory.js';
 import { getDynamicModel, resolveModel } from './agents/model.js';
 import { getStaticallyLoadedInstructionPaths } from './agents/prompts/agent-instructions.js';
-import { executeSubagent } from './agents/subagents/execute.js';
-import { exploreSubagent } from './agents/subagents/explore.js';
-import { planSubagent } from './agents/subagents/plan.js';
+import { builtInSubagentModeMap, builtInSubagents } from './agents/subagents/built-ins.js';
 import { attachOMThreadStatePersistence, restoreOMThreadStateForCurrentThread } from './agents/thread-caveman-state.js';
 import { createDynamicTools } from './agents/tools.js';
 
@@ -475,7 +473,7 @@ export async function createMastraCode(config?: MastraCodeConfig) {
     },
   });
 
-  const defaultSubagents = [exploreSubagent, planSubagent, executeSubagent];
+  const defaultSubagents = builtInSubagents;
 
   const defaultModesV1: HarnessModeV1[] = [
     {
@@ -585,12 +583,10 @@ export async function createMastraCode(config?: MastraCodeConfig) {
   }
   const modes = modesV1.map(mode => v1ModeToLegacy(mode, codeAgent));
 
-  // Map subagent types to mode models: explore→fast, plan→plan, execute→build
-  const subagentModeMap: Record<string, string> = { explore: 'fast', plan: 'plan', execute: 'build' };
   // Subagents inherit workspace tools from the parent agent's workspace automatically.
   // Apply disabledTools filter to both default and custom subagents.
   const subagents = (config?.subagents ?? defaultSubagents).map(sa => {
-    const modeId = subagentModeMap[sa.id];
+    const modeId = builtInSubagentModeMap[sa.id];
     const model = modeId ? effectiveDefaults[modeId] : undefined;
     let filtered = sa;
     if (config?.disabledTools?.length) {

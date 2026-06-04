@@ -8,6 +8,7 @@ import type { Component } from '@mariozechner/pi-tui';
 import type { AgentSignalAttributes } from '@mastra/core/agent';
 import type { HarnessEvent, HarnessMessage } from '@mastra/core/harness';
 import type { Workspace } from '@mastra/core/workspace';
+import { builtInSubagentModeMap } from '../agents/subagents/built-ins.js';
 import { getOAuthProviders } from '../auth/storage.js';
 import {
   OnboardingInlineComponent,
@@ -1261,8 +1262,7 @@ export class MastraTUI {
       await harness.switchModel({ modelId: currentModeModel });
     }
 
-    const subagentModeMap: Record<string, string> = { explore: 'fast', plan: 'plan', execute: 'build' };
-    for (const [agentType, modeId] of Object.entries(subagentModeMap)) {
+    for (const [agentType, modeId] of Object.entries(builtInSubagentModeMap)) {
       const saModelId = (modePack.models as Record<string, string>)[modeId];
       if (saModelId) {
         await harness.setSubagentModelId({ modelId: saModelId, agentType });

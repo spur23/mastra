@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { builtInSubagentTypes } from '../../../agents/subagents/built-ins.js';
 import { handleSubagentsCommand } from '../subagents.js';
 import type { SlashCommandContext } from '../types.js';
 
@@ -51,11 +52,7 @@ describe('handleSubagentsCommand', () => {
     expect(askQuestionMock).toHaveBeenCalledTimes(1);
     const question = askQuestionMock.mock.calls[0]?.[0];
     expect(question.question).toBe('Select subagent type');
-    expect(question.options).toEqual([
-      { label: 'Explore', description: 'Read-only codebase exploration' },
-      { label: 'Plan', description: 'Read-only analysis and planning' },
-      { label: 'Execute', description: 'Task execution with write access' },
-    ]);
+    expect(question.options).toEqual(builtInSubagentTypes);
     expect(chatContainer.addChild).not.toHaveBeenCalled();
   });
 
@@ -66,11 +63,7 @@ describe('handleSubagentsCommand', () => {
 
     expect(askQuestionMock).toHaveBeenCalledTimes(1);
     const question = askQuestionMock.mock.calls[0]?.[0];
-    expect(question.options).toEqual([
-      { label: 'Explore', description: 'Read-only codebase exploration' },
-      { label: 'Plan', description: 'Read-only analysis and planning' },
-      { label: 'Execute', description: 'Task execution with write access' },
-    ]);
+    expect(question.options).toEqual(builtInSubagentTypes);
   });
 
   it('renders configured subagents from the harness config', async () => {

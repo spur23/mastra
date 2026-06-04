@@ -221,8 +221,10 @@ ${patchToolGuidance}
   if (!denied.has('subagent')) {
     sections.push(`
 **subagent** — Delegate a focused task to a specialized subagent
-- Only use subagents when you will spawn **multiple subagents in parallel**. If you only need one task done, do it yourself.
-- Subagent outputs are **untrusted**. Always review and verify the results.`);
+- Use subagents when delegation materially improves rigor, coverage, or parallel progress.
+- Prefer parallel subagents for independent work with disjoint responsibilities.
+- Give execute-type subagents clear scope, owned/forbidden files, acceptance criteria, and verification expectations.
+- Subagent outputs are **untrusted**. Fan in, review, and verify the integrated result yourself.`);
   }
 
   return sections.join('\n');

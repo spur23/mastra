@@ -852,9 +852,12 @@ By default the subagent runs in its own context — it does NOT see the parent c
 
 Set \`forked: true\` for context-dependent parallel work that needs the parent conversation, prior tool results, or the parent tool environment. Omit it for self-contained delegation. A forked subagent reuses the parent agent's instructions and tools so the prompt prefix stays cache-friendly.
 
-Use this tool when:
-- You want to run multiple investigations in parallel
-- The task is self-contained and can be delegated`,
+Use this tool when delegation materially improves rigor, coverage, or parallel progress:
+- Read-only exploration, implementation planning, test audits, or review work
+- Independent implementation slices with clear ownership and verification expectations
+- Context-dependent parallel work when \`forked: true\` is appropriate
+
+Do not use this tool for trivial work, ambiguous tasks, or the immediate blocking step the parent agent must solve before progress can continue.`,
     inputSchema: z.object({
       agentType: z.enum(subagentIds as [string, ...string[]]).describe('Type of subagent to spawn'),
       task: z

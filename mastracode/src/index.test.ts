@@ -42,9 +42,10 @@ vi.mock('./agents/model.js', () => ({
   resolveModel: vi.fn(),
 }));
 
-vi.mock('./agents/subagents/execute.js', () => ({ executeSubagent: {} }));
-vi.mock('./agents/subagents/explore.js', () => ({ exploreSubagent: {} }));
-vi.mock('./agents/subagents/plan.js', () => ({ planSubagent: {} }));
+vi.mock('./agents/subagents/audit-tests.js', () => ({ auditTestsSubagent: { id: 'audit-tests' } }));
+vi.mock('./agents/subagents/execute.js', () => ({ executeSubagent: { id: 'execute' } }));
+vi.mock('./agents/subagents/explore.js', () => ({ exploreSubagent: { id: 'explore' } }));
+vi.mock('./agents/subagents/plan.js', () => ({ planSubagent: { id: 'plan' } }));
 vi.mock('./agents/tools.js', () => ({ createDynamicTools: vi.fn() }));
 vi.mock('./agents/workspace.js', () => ({ getDynamicWorkspace: vi.fn() }));
 

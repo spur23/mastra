@@ -1,3 +1,4 @@
+import { builtInSubagentTypes } from '../../agents/subagents/built-ins.js';
 import { loadSettings, saveSettings } from '../../onboarding/settings.js';
 import { ModelSelectorComponent } from '../components/model-selector.js';
 import type { ModelItem } from '../components/model-selector.js';
@@ -5,24 +6,6 @@ import { askModalQuestion } from '../modal-question.js';
 import { showModalOverlay } from '../overlay.js';
 import { promptForApiKeyIfNeeded } from '../prompt-api-key.js';
 import type { SlashCommandContext } from './types.js';
-
-const BUILT_IN_SUBAGENT_TYPES: Array<{ id: string; label: string; description: string }> = [
-  {
-    id: 'explore',
-    label: 'Explore',
-    description: 'Read-only codebase exploration',
-  },
-  {
-    id: 'plan',
-    label: 'Plan',
-    description: 'Read-only analysis and planning',
-  },
-  {
-    id: 'execute',
-    label: 'Execute',
-    description: 'Task execution with write access',
-  },
-];
 
 async function showSubagentModelListForScope(
   ctx: SlashCommandContext,
@@ -125,7 +108,7 @@ function getConfiguredSubagentTypes(
         label: subagent.name,
         description: subagent.description,
       }))
-    : BUILT_IN_SUBAGENT_TYPES;
+    : builtInSubagentTypes;
 }
 
 export async function handleSubagentsCommand(ctx: SlashCommandContext): Promise<void> {

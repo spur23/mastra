@@ -2,6 +2,7 @@ import { Box, SelectList, Spacer, Text } from '@mariozechner/pi-tui';
 import type { SelectItem } from '@mariozechner/pi-tui';
 import chalk from 'chalk';
 
+import { builtInSubagentModeMap } from '../../agents/subagents/built-ins.js';
 import { setClipboardText } from '../../clipboard/index.js';
 import type { ModePack, ProviderAccess, ProviderAccessLevel } from '../../onboarding/packs.js';
 import { getAvailableModePacks } from '../../onboarding/packs.js';
@@ -394,8 +395,7 @@ async function applyPack(ctx: SlashCommandContext, pack: ModePack, previousPackI
     await harness.switchModel({ modelId: currentModeModel });
   }
 
-  const subagentModeMap: Record<string, string> = { explore: 'fast', plan: 'plan', execute: 'build' };
-  for (const [agentType, modeId] of Object.entries(subagentModeMap)) {
+  for (const [agentType, modeId] of Object.entries(builtInSubagentModeMap)) {
     const saModelId = (pack.models as Record<string, string>)[modeId];
     if (saModelId) {
       await harness.setSubagentModelId({ modelId: saModelId, agentType });

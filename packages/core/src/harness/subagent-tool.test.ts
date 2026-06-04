@@ -84,6 +84,19 @@ describe('createSubagentTool requestContext forwarding', () => {
     vi.restoreAllMocks();
   });
 
+  it('describes workflow-oriented delegation without the old parallel-investigation-only contract', () => {
+    const tool = createSubagentTool({
+      subagents,
+      resolveModel,
+      fallbackModelId: 'test-model',
+    });
+
+    expect(tool.description).toContain('delegation materially improves rigor');
+    expect(tool.description).toContain('Independent implementation slices');
+    expect(tool.description).toContain('verification expectations');
+    expect(tool.description).not.toContain('multiple investigations in parallel');
+  });
+
   it('does NOT append the internal `<subagent-meta />` tag to model-facing content (success path)', async () => {
     // Regression: when the parent model can see this tag in a tool result it
     // sometimes echoes the literal markup back into its own assistant text on
